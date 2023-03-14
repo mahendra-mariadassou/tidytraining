@@ -1,0 +1,812 @@
+---
+title: "Programming Basics"
+output: 
+  learnr::tutorial:
+    progressive: true
+    allow_skip: true
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Welcome to this class
+
+### Learning goals
+
+The goal of this class is to teach you how the R language works. We'll review basic concepts  and knowledge underlying all R code. Specifically, you’ll learn about:
+
+- **functions** and their **arguments**
+- **objects**
+- R’s basic **data types**
+- R’s basic **data structures** including vectors, lists and data frames
+- R’s **package** system
+
+## Functions 
+
+### Overview
+
+Functions are bread and butter of R. They are your most useful tool when analyzing and vizualising data. You will use general purpose functions and write your own for more specialized tasks. 
+
+Briefly:
+
+- functions are fed **inputs** (called **arguments**)
+- they produce **outputs** (or sometimes just a side-effet like producing a graph or printing something on screen)
+
+### Running a function
+
+Use the `sqrt()` function in the chunck below to compute the square root of 9:
+
+```{r sqrt_nine, exercise = TRUE}
+
+```
+
+```{r sqrt_nine-solution}
+sqrt(9)
+```
+
+
+### Code of `sqrt`
+
+You can examine the code of the `sqrt()` function with the command `sqrt` (without parenthesis)
+
+```{r sqrt_code, exercise = TRUE}
+
+```
+
+```{r sqrt_code-solution}
+sqrt
+```
+
+The **body** of the function is very small as `sqrt` immediately calls a low-level function (a **primitive**) written in C++ and optimized for efficiency. 
+
+### Code of `cor`
+
+Have a quick look at the code for the `cor` function
+
+```{r cor_code, exercise = TRUE}
+
+```
+
+```{r cor_code-solution}
+cor
+```
+
+Unlike `sqrt`, the body of `cor` is quite long! This a very useful function that you'll use frequently in the future. Let's display the help page of `cor` using `?cor` (**the help is only displayed when using R in the console/Rstudio, not in this self-learning framework**)
+
+```{r cor_help, exercise = TRUE}
+
+```
+
+```{r cor_help-solution}
+?cor
+```
+
+`cor` is the function used to compute the *correlation* between two quantities: vectors, random variables, etc. You'll learn more about the correlation and its different variants during your classes with Tristan. 
+
+### Comments
+
+You can easily comment your code with the `#` symbol. Everything placed after a `#` on a line will be ignored. Use it wisely to write human readable comments in your code. 
+
+Experiment with comments by commenting/uncommenting some lines in the following example
+
+```{r comment, exercise = TRUE}
+# sqrt(9)
+sqrt(16)
+```
+
+## Arguments
+
+Arguments are the inputs of a function. They can take many forms. In particular, they can 
+
+- be optional
+- be named
+- have default values
+
+We will illustrate those concepts using the `rnorm` function which allows you to generate random samples (`r`) from a normal distribution (`norm`). 
+
+### Finding the arguments
+
+You can find the arguments by reading the help (`?rnorm`) or by using the `args()` function on `rnorm`
+
+```{r rnorm_arg, exercise = TRUE}
+args(rnorm)
+```
+
+```{r rnorm_default_quiz}
+question("Which arguments of rnorm have default values?",
+    answer("n"),
+    answer("mean", correct = TRUE),
+    answer("sd", correct = TRUE), 
+    allow_retry = TRUE
+)
+```
+
+### Calling a function
+
+Arguments with defaults values are **optional** meaning that the following call is valid. 
+
+```{r rnorm_example, echo = TRUE, eval = FALSE}
+rnorm(n = 10) 
+## equivalent to rnorm(n = 10, mean = 0, sd = 1)
+```
+
+In fact, you don't even need to specify `n =`. By default, R matches argument from left to right... 
+
+```{r rnorm_example_2, echo = TRUE, eval = FALSE}
+rnorm(10, 0, 1) 
+## equivalent to rnorm(n = 10, mean = 0, sd = 1)
+```
+
+... unless some arguments are named in which case matching occurs only for unnamed arguments.
+
+```{r rnorm_example_3, echo = TRUE, eval = FALSE}
+rnorm(mean = 0, 10, 1) 
+## equivalent to rnorm(n = 10, mean = 0, sd = 1)
+```
+
+`mean` is provided explicitly, thus `10` and `1` are matched to the remaining arguments: `n` and `sd`
+
+
+### Calling a function (your turn)
+
+Generate 100 samples from a normal deviation with mean 10 and standard deviation 2. 
+
+```{r rnorm_1, exercise = TRUE}
+
+```
+
+```{r rnorm_1-solution}
+rnorm(n = 100, mean = 10, sd = 2)
+```
+
+There is an error in the following call to `rnorm`. Spot it and fix it. 
+
+```{r rnorm_2, exercise = TRUE}
+rnorm(n = 100, mu = 15, sigma = 2)
+```
+
+```{r rnorm_2-solution}
+rnorm(n = 100, mean = 15, sd = 2)
+```
+
+## Objects
+
+**Objects** or variables are a staple of R. They are used to store values (simple or complex), data, code, functions, etc. 
+
+We've already seen some objects before: `cor`, `sqrt`, etc. In this class, we'll use objects mostly to store *data*. 
+
+The best way to create new objects is through the **assignment** operator `<-`. Be sure to use simple yet explicit names. 
+
+```{r assignment_example, echo = TRUE}
+nine <- 9
+## print the "content" of object called "nine"
+nine       
+## apply sqrt to the content of object called "nine"
+sqrt(nine) 
+```
+
+### Object names 
+
+Oject names follow simple rules. You can choose almost any name you like, as long as it does not begin with a number or a special character like `+`, `-`, `*`, `/`, `^`, `!`, `@`, or `&` and has no space inside.
+
+```{r name_question}
+question("Which of the following are correct names?", 
+         answer("licence", correct = TRUE),
+         answer("object", correct = TRUE), 
+         answer("+1"), 
+         answer("\\^-^"), 
+         answer("for", message = "Unfortunately, this is reserved word, like \"while\", \"break\", \"return\" and a few others."),
+         answer("Charles V")
+         )
+```
+
+### Using objects
+
+Save the results of `rnorm(100, mean = 10, sd = 2)` to an object named `data`. Then, on a new line, call the `hist()` function on `data` to plot a histogram of the random values.
+
+```{r using_object, exercise = TRUE}
+
+```
+
+```{r using_object-solution}
+data <- rnorm(100, mean = 10, sd = 2)
+hist(data)
+```
+
+### Understanding assignment
+
+Run the following code. Guess the content of `copy` before checking your intuition. 
+
+```{r assignment, exercise = TRUE, exercise.eval = FALSE, exercise.lines = 4}
+data <- rnorm(5)
+data
+copy <- data
+```
+
+### Data sets
+
+Objects provide an easy way to store data sets in R. In fact, R comes with many toy data sets pre-loaded. Examine the contents of `iris` to see a classic toy data set. Hint: how could you learn more about the `iris` object?  
+
+```{r iris, exercise = TRUE}
+
+```
+
+```{r iris-solution}
+iris
+?iris ## for the description of the dataset
+```
+
+You can think of iris as a rectangular array.
+
+```{r iris_dimensions}
+quiz(
+  question("How many columns are there in the iris dataset?", 
+           answer("4"), 
+           answer("5", correct = TRUE), 
+           answer("6")
+           ), 
+  question("How many rows are there in the iris dataset?", 
+           answer("10"), 
+           answer("5"), 
+           answer("150", correct = TRUE)
+           ), 
+  caption = "Iris dimensions"
+)
+```
+
+### Removing an object
+
+You can remove an object with the function `rm`. It will help you restore *base* datasets that you accidently overwrote. 
+
+In the following example, remove your custom version of iris and check that you restored the correct one. 
+
+```{r rm_iris, exercise = TRUE}
+iris <- 1
+iris
+```
+
+```{r rm_iris-solution}
+iris <- 1
+rm(iris)
+iris
+```
+  
+**Note** If you remove an object that **you** created (as opposed to pre-loaded), `rm` will permanently delete it. Use `rm` with caution. 
+
+## Vectors
+
+You can think of vector as 1D arrays of values with the **same type** (e.g. numeric, characters, etc). Unlike Python, indexing is 1-based meanin that the first element is in position `1` (and not `0`).
+
+You can easily create vectors with the `c()` function (or the shortcut `:` for integer sequences). 
+
+```{r vector_creation, echo = TRUE}
+x <- c(2, 3, 4, 5) ## equivalent to 2:5
+x
+```
+
+Some functions, like `sqrt` are **vectorized**: they operate on each value of a vector:
+
+```{r vectorized_function, echo = TRUE}
+sqrt(x)
+```
+
+Some others, like `mean` or `max`, return a single value no matter how long the input vector:
+```{r non_vectorized_function, echo = TRUE}
+mean(x) 
+max(x)
+```
+
+Finally elements of a vector can have a **name**, which is useful when you want a extract a specific value. 
+
+```{r named_vector, echo = TRUE}
+x <- c("one" = 1, "two" = 2, "three" = 3)
+x
+```
+
+
+### Create a vector
+
+Create a vector `x` that contains the integers from one to ten.
+
+```{r create_1_10, exercise = TRUE}
+
+```
+
+```{r create_1_10-solution}
+x <- 1:10
+```
+
+### Subsetting with `[]`
+
+You can extract any element of a vector with the subsetting operator `[]`. You just need to provide the positions of the element you want to extract, e.g. `x[1]` to extract the first element of `x`. 
+
+Use the chunk below to extract the fourth element of `x`.
+
+```{r extracting, exercise = TRUE}
+x <- 1:10
+```
+
+```{r extracting-solution}
+x[4]
+```
+
+### Subsetting with `[]` (II)
+
+You can substract more than one element at once by providing `[]` with a vector of positions to extract. 
+
+```{r extraction_2, echo = TRUE}
+x <- c(1, 2, 4, 8, 16)
+x[c(1, 2, 4)]
+```
+
+You can give a logical vector, made of `TRUE` (or `T`) and `FALSE` (or `F`) to specify which values to extract. 
+
+```{r extraction_3, echo = TRUE}
+x <- c(1, 2, 4, 8, 16)
+x[c(T, T, F, T, F)]
+```
+
+Extract all values of `x` that are greater than or equal to 4. 
+
+```{r extraction_exercise, exercise = TRUE}
+x <- 1:10
+```
+
+```{r extraction_exercise-solution}
+x[4:10]
+```
+
+### Subsetting with names
+
+When working with named vectors, you can extract elements using either **names** or **positions** (but not both at the same time)
+
+```{r extraction_4, echo = TRUE}
+x <- c("one" = 1, "two" = 2, "three" = 3)
+x[c("three", "one")]
+```
+
+Extract the element named beta from the following vector
+
+```{r extraction_name, exercise = TRUE}
+x <- c("alpha" = 1, "beta" = 2, "gamma" = 3)
+```
+
+```{r extraction_name-solution}
+x["beta"]
+```
+
+### Vectorized operations
+
+We saw in the introduction that `sqrt()` was vectorized. It's also true for `+` and `*` (for example). 
+
+Predict the result of the following code and check the actual result. 
+
+```{r vector_operation_1, exercise = TRUE}
+1:10 * 1:10
+```
+
+Predict the result of the following code and check the actual result. You can look at the help of `pmin()` to help you understand the difference between `min()` and `pmin()`. 
+
+```{r vector_operation_2, exercise = TRUE}
+pmin(c(1, 3, 5, 7, 9), 
+     c(8, 6, 4, 2, 0))
+```
+
+### Recycling 
+
+Sometimes, you may want to manipulate vectors with differents lengths. R uses a process known as **recycling** to deal with them. 
+
+Predict the result of the following code and check the actual result. How do you think recycling works? 
+
+```{r vector_recycling, exercise = TRUE}
+1 + c(1, 2, 3, 4, 5)
+```
+
+Try to check your prediction and understanding with the more complex example:
+
+```{r vector_recycling_2, exercise = TRUE}
+c(1, 2) + c(1, 2, 3, 4, 5, 6)
+```
+
+### Filtering 
+
+We can combine vectorized operations and logical subsetting to filter the values of a vector. 
+
+Consider the following example, where:
+
+- `x %% 2` is the rest of the euclidian division of `x` by `2`
+- `==` is used to check equality
+- `even` is a logical vector indicating which numbers are even
+
+```{r vector_filter, echo = TRUE}
+x <- 1:10
+even <- (x %% 2) == 0
+even    ## TRUE for even numbers, FALSE for odd ones
+x[even] ## keep only even numbers. 
+```
+
+Using the `>` operator, extract only values from `x` that are greater than 3. If you want an extra challenge, you can try to find a 6-characters solution.                                                           
+
+```{r extract_logical_exercise, exercise = TRUE}
+x <- 1:10
+```
+
+```{r extract_logical_exercise-solution}
+x[x > 3]
+```
+
+## Types 
+
+### Atomic types
+
+All values in a vector implicitly have the same **type**. Until now, we have only seen so called **integer** (e.g. `1:10`) and **numeric** (e.g. `rnorm(10)`) values. In R, a single (**atomic**) value can have any of the following type:
+
+- integer
+- numeric (also called *double* as they are stored using two bytes)
+- character
+- complex (rarely used)
+- logical
+- raw (rarely used, unless you do low level programming)
+
+You can find the type of a data using the `typeof()` function. 
+
+```{r type_double, echo = TRUE}
+x <- 1.5
+typeof(x)
+```
+
+```{r type_character, echo = TRUE}
+x <- "fdv"
+typeof(x)
+```
+
+```{r type_logical, echo = TRUE}
+x <- TRUE
+typeof(x)
+```
+
+```{r type_integer, echo = TRUE}
+x <- 1L
+typeof(x)
+## Compare with 
+x <- 1
+typeof(x)
+```
+
+By default, R stores numeric values as floating point. To force R to store them as integers use the `L` suffix (which stands for `long` and comes from C). 
+
+```{r type_question}
+question("What type of data is \"1L\"?", 
+  answer("numeric/double"), 
+  answer("integer", message = "Close, `1L` would be an integer but look closer."),
+  answer("character", correct = TRUE),
+  answer("logical"), 
+  allow_retry = TRUE
+  )
+```
+
+### Combining multiple types
+
+We said previously that all values in a vector have the same type. This means that R automatically **converts** values whose atomic types differ. 
+
+Run the following examples:
+
+```{r type_conversion, exercise = TRUE}
+x <- c(1L, TRUE)
+typeof(x)
+x <- c(1L, 1.5)
+typeof(x)
+x <- c(1L, 1.5, "licence")
+typeof(x)
+```
+
+They illustrate the basic rule for automatic conversion: `logical` > `integer` > `double` > `character`
+
+- logicals can be converted to integers (`FALSE` to `0L` and `TRUE` to `1L`)
+- integers can be converted to double (`1L` to `1`)
+- doubles can be converted to character (`1.5` to `"1.5"`)
+
+```{r type_conversion_question}
+question("What is the type of c(2, FALSE, \"5.14\")",
+         answer("integer"),
+         answer("character", correct = TRUE),
+         answer("logical"), 
+         answer("double/numeric", message = "Close, but look more carefully"), 
+         allow_retry = TRUE
+         )
+```
+
+### Conversion functions
+
+Non automatic conversion is possible using the `as.TYPE()` functions, for example:
+
+```{r type_conversion_example_1, echo = TRUE}
+as.numeric("5.14")
+```
+
+But some conversion may fail with a warning and produce `NA` (not available, a shorthand for missing or unknown values). 
+
+```{r type_conversion_example_2, echo = TRUE}
+as.numeric("fdv")
+```
+
+Following the previous examples, experiment with `as.numeric`, `as.character`, `as.logical` and `as.integer` to understand how conversion works and which conversions are valid. 
+
+```{r type_conversion_example_exercise, exercise = TRUE}
+as.numeric("fdv")
+as.logical(5)
+```
+
+### Integers
+
+Create a vector of integers from one to five. Can you imagine why you might want to use integers instead of numbers/doubles?
+
+```{r type_integer_exercise, exercise = TRUE}
+
+```
+
+```{r type_integer_exercise-solution}
+x <- 1:5
+```
+
+### Floating point arithmetic
+
+Computers must use a finite amount of memory to store decimal numbers (which can sometimes require infinite precision). As a result, some decimals can only be saved as very precise approximations. From time to time you’ll notice side effects of this imprecision, like below.
+
+Compute the square root of two, square the answer (e.g. multiply the square root of two by the square root of two), and then subtract two from the result. What answer do you expect? What answer do you get?
+
+```{r type_numeric_exercise, exercise = TRUE}
+
+```
+
+```{r type_numeric_exercise-solution}
+sqrt_of_2 <- sqrt(2)
+sqrt_of_2 * sqrt_of_2 ## or sqrt_of_2^2
+sqrt_of_2 * sqrt_of_2 - 2
+```
+
+### Character or object?
+
+One of the most common mistakes in R is to call an object when you mean to call a character string and vice versa.
+
+```{r object_name_question}
+question("Which of these are object names? What is the difference between object names and character strings?", 
+         answer("a", correct = TRUE),
+         answer("\"a\""), 
+         answer("\"data\""), 
+         answer("\"mu\""), 
+         answer("fdv", correct = TRUE),
+         allow_retry = TRUE
+         )
+```
+
+## Factors 
+
+Factors are special vectors used to stored observations that can only take a finite (and small) number of different values, known as **levels**. For example, children attending primary school in France can only be in `CP`, `CE1`, `CE2`, `CM1` or `CM2`. Likewise, in some experiments, observations fall either in the `control` or `treatment` group. 
+
+Vectors can be transformed to factors using the `factor()` function. 
+
+```{r factor_example_1, echo = TRUE}
+school_year <- factor(c("CP", "CE2", "CE2", "CM2", "CM1", "CE1"))
+school_year
+```
+
+And levels can be extracted using the `levels()` function
+
+```{r factor_example_2, echo=TRUE}
+levels(school_year)
+```
+
+By default, R store the levels in alphabetic order but you can specify a relevant order when creating the data:
+
+```{r factor_example_3, echo=TRUE}
+school_year <- factor(c("CP", "CE2", "CE2", "CM2", "CM1", "CE1"), 
+                      levels = c("CP", "CE1", "CE2", "CM1", "CM2"))
+school_year
+```
+
+Factors are internally stored as integers (`1L` for the first level, `2L` for the second one, etc) and levels associate each integer to its *label*. 
+
+### Creating a factor
+
+Create a factor `promo` from the following vector.
+
+```{r factor_creation_exercise, exercise = TRUE}
+promo <- c("Fluor", "Fluor", "Carbone", "Carbone", "Fluor", "Azote", "Azote")
+```
+
+```{r factor_creation_exercise-solution}
+promo <- factor(promo)
+```
+
+### Changing the levels
+
+We want to order the levels of promo according to the periodic table. Is the following code correct? If not, correct it and try to understand why it's wrong. 
+
+```{r factor_ordering, exercise = TRUE}
+promo <- c("Fluor", "Fluor", "Carbone", "Carbone", "Fluor", "Azote", "Azote")
+promo <- factor(promo)
+levels(promo) <- c("Carbone", "Azote", "Oxygène", "Fluor")
+```
+
+```{r factor_ordering-solution}
+promo <- c("Fluor", "Fluor", "Carbone", "Carbone", "Fluor", "Azote", "Azote")
+promo <- factor(promo, levels = c("Carbone", "Azote", "Oxygène", "Fluor"))
+```
+
+## Lists 
+
+Vectors can only store one type of value. Sometime, we want to merge numeri and character values. In that case we must resort to **lists**. You can think about lists as very flexible data structures. 
+
+```{r list_example_1, echo = TRUE}
+x <- list("integer" = 1L, "double" = 1.0, "logical" = TRUE, "character" = "one")
+x
+```
+
+You're not limited to single values. You can store *vectors* of different sizes in a list:
+
+```{r list_example_2, echo=TRUE}
+x <- list("integers" = 1:5, "doubles" = c(1, 1.5, 2), "logicals" = FALSE, "characters" = c("one", "two"))
+x
+```
+
+Extracting works slightly differently for lists than for vectors: `[]` is replaced by `[[]]` or `$` (only for named lists)
+
+```{r list_example_3, echo=TRUE}
+x <- list("integers" = 1:5, "doubles" = c(1, 1.5, 2), "logicals" = FALSE, "characters" = c("one", "two"))
+x[[1]]
+x[["doubles"]]
+x$characters
+```
+
+Finally, you can store lists within lists, allowing you to create deeply nested data structures. 
+
+```{r list_example_4, echo=TRUE}
+x <- list(
+  "first_list"  = list("integers" = 1:5, "doubles" = c(1, 1.5, 2)), 
+  "second_list" = list("logicals" = FALSE, "characters" = c("one", "two"))
+)
+x
+```
+
+### List versus vectors
+
+```{r list_vs_vectors_question}
+question("Which data structure(s) could you use to store these pieces of data in the same object? 1001, TRUE, \"stories\".", 
+         answer("a vector"), 
+         answer("a list", correct = TRUE), 
+         answer("neither"), 
+         allow_retry = TRUE)
+```
+
+### Make a list
+
+Make a list that contains the elements `2020`, `TRUE`, and `"Licence FdV"`. Give each element a name.
+
+```{r list_make_exercise, exercise = TRUE}
+
+```
+
+```{r list_make_exercise-solution}
+list(year = 2020, logical = TRUE, program = "Licence FdV")
+```
+
+### Extracting an element
+
+Extract the element `"Licence FdV"` from the following list
+
+```{r list_extract_exercise, exercise = TRUE}
+x <- list(year = 2020, logical = TRUE, program = "Licence FdV")
+```
+
+```{r list_extract_exercise-solution}
+x$program
+```
+
+## Data frames
+
+Data frames (like the `iris` dataset we saw) are very special lists where all elements of the lists are *equal-length* vectors. The best way to think of data frames is as rectangular array where:
+
+- each row represents a different observation unit (i.e. a flower for the `iris` dataset)
+- each column represent a different feature (i.e. sepal width, sepal length, species in the `iris` dataset)
+
+All values in a given column have the same type but types can differ along a single row (e.g. some features can be numeric, others logical)
+
+### Creating a data frame
+
+You can make a data frame with the `data.frame()` function, which works similar to `c()`, and `list()`. Assemble the vectors below into a data frame with the column names `year`, `parcoursup`, `name`.
+
+```{r create_data_frame, exercise = TRUE}
+yrs <- 2016:2019
+prcrsp <- c(FALSE, FALSE, FALSE, TRUE)
+nms <- c("Carbone", "Azote", "Oxygène", "Fluor")
+```
+
+```{r create_data_frame-solution}
+data.frame(year = yrs, parcoursup = prcrsp, name = nms)
+```
+
+### Extracting a column
+
+Extract the `name` column of the data frame `data`. 
+
+```{r extract_data_frame, exercise = TRUE}
+yrs <- 2016:2019
+prcrsp <- c(FALSE, FALSE, FALSE, TRUE)
+nms <- c("Carbone", "Azote", "Oxygène", "Fluor")
+data <- data.frame(year = yrs, parcoursup = prcrsp, name = nms)
+```
+
+```{r extract_data_frame-hint}
+"Remember that data frames are named lists"
+```
+
+```{r extract_data_frame-solution}
+data$name
+```
+
+## Packages
+
+In this tutorial, we've only used objects that are **preloaded** in R. However, The power of R comes from its **packages**. Packages are collection of objects (code, function, data) usually focused around a scientific topic contributed by the community and greatly extending the possibilities of base R. 
+
+Tens of thousands of packages are available and they range from analysis of financial time series to construction and optimal correction of randomized tests. 
+
+Unlike preloaded objects, objects from packages are not directly available. You must first install the package (only once)
+
+```{r install.package, eval = FALSE}
+install.packages("learnr")
+```
+
+and then load it in your session (once per session)
+
+```{r library, eval = FALSE}
+library(learnr)
+```
+
+Once loaded, all functions from the `learnr` will be available for use. 
+
+### A common error
+
+```{r common_error_question}
+question("What does this common error message suggest: \"Object foo does not exist.\" ?", 
+         answer(" You misspelled your object name"), 
+         answer("You've forgot to load the package that foo comes in"), 
+         answer("Either", correct = TRUE)
+         )
+```
+
+### Load a package
+
+Load the `ggplot2` package in your session (we'll use it soon to produce beautiful graphics). 
+
+```{r load_ggplot2_exercise, exercise = TRUE}
+
+```
+
+```{r load_ggplot2_exercise-solution}
+library(ggplot2)
+```
+
+### Install a package
+
+Install the `ggplot2` package on your computer (there's actually no need to run the code, `ggplot2` is already installed on your computer). 
+
+```{r install_ggplot2_exercise, exercise = TRUE}
+
+```
+
+```{r install_ggplot2_exercise-solution}
+install.packages("ggplot2")
+```
+
+### Congratulations!
+
+Congratulations, you now know the basics of R. We'll move in the next sessions to more advanced topics. 
+
+### More ressources
+
+- You can look at the excellent Rstudio online (from which this course takes shameless inspiration) [tutorials](https://rstudio.cloud/learn/primers)
+
